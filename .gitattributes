@@ -1,0 +1,7 @@
+* text=auto
+*.c text
+Makefile text
+.gitattributes text
+.gitignore text
+LICENSE text
+README.md text
