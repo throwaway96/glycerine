@@ -1,8 +1,10 @@
 # glycerine
 
-On webOS 1, there doesn't seem to be any way to enable "dev logs"--i.e.,
-disable the whitelist in `PmLogDaemon`. So let's just add everything to the
-whitelist instead.
+On webOS 1, there doesn't seem to be any way to enable
+["dev logs"](https://www.webosbrew.org/pages/logging.html)—i.e., disable the
+whitelist in `PmLogDaemon`. Instead, let's just add everything to the
+whitelist... or at least make `PmLogDaemon` *believe* everything is
+whitelisted.
 
 ## Theory
 
@@ -15,7 +17,7 @@ I thought about checking which module `g_hash_table_lookup()` was being called
 from, but I'm too lazy for that. Instead, I decided to just grab the first hash
 table created with `g_hash_table_new()` that uses the default string hash table
 functions `g_str_hash` and `g_str_equal`. The creation of the whitelist hash
-table occurs early in the lifetime of `PmLogDaemon`--it may well be the very
+table occurs early in the lifetime of `PmLogDaemon`—it may well be the very
 first one, but the extra checks don't hurt. Anyway, when
 `g_hash_table_lookup()` is called on the previously recorded hash table, I just
 return a non-null value. It's not a valid pointer, but `PmLogDaemon` only cares
@@ -36,7 +38,7 @@ make CROSS_COMPILE=/opt/arm-webos-linux-gnueabi_sdk-buildroot/bin/arm-webos-linu
 ## Using
 
 If you kill `PmLogDaemon` a bunch of times quickly, Upstart will stop trying to
-start it. Then you can start it yourself with:
+restart it. Then you can start it yourself with:
 
 ```sh
 LD_PRELOAD=/path/to/libglycerine.so /usr/sbin/PmLogDaemon -z -f 6 -m
